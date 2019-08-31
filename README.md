@@ -2,7 +2,7 @@
 ## Fall 2019
 ## Project 1: Song Lyrics Analysis
 
-<img src="figs/title.png" alt="title" style="width:150px;"/>
+<img src="figs/title.png" alt="title" style="width:100px;"/>
 
 ### [Project Description](doc/)
 This is the first and only *individual* (as opposed to *team*) this semester. 
