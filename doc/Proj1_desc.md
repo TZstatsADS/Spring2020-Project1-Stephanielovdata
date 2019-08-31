@@ -5,6 +5,13 @@
 
 The goal of this project is to look deeper into the patterns and characteristics of different types of song lyrics. Natural language processing and text mining are natural tools to derive interesting findings in this collection of song lyrics. 
 
+### Datasets
+
+"lyrics.csv" is a filtered corpus of 100,000+ song lyrics from from MetroLyrics. You can find the complete 380,000+ song lyrics data on [Kaggle](https://www.kaggle.com/gyani95/380000-lyrics-from-metrolyrics).
+
+"artists.csv" provides the background information of all the artistis. These information are scraped from [LyricsFreak](https://www.lyricsfreak.com/).
+
+
 ### Challenge 
 
 In this project you will carry out an exploratory data analysis of the corpus of song lyrics and write a blog on interesting findings.
