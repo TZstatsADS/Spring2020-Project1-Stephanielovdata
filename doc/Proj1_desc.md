@@ -2,7 +2,7 @@
 ## STAT GR5243/GU4243 Fall 2019 
 ### Project 1 An R Notebook Data Story on Song Lyrics
 
-<img src="figs/title.png" width="300">
+<img src="../figs/title.png" width="300">
 
 The goal of this project is to look deeper into the patterns and characteristics of different types of song lyrics. Natural language processing and text mining are natural tools to derive interesting findings in this collection of song lyrics. 
 
