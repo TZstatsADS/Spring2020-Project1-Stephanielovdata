@@ -1,13 +1,13 @@
 # Applied Data Science @ Columbia
-## Fall 2018
-## Project 1: What made you happy today?
+## Fall 2019
+## Project 1: Song Lyrics Analysis
 
 ![image](figs/title.jpeg)
 
 ### [Project Description](doc/)
 This is the first and only *individual* (as opposed to *team*) this semester. 
 
-Term: Fall 2018
+Term: Fall 2019
 
 + Projec title: Lorem ipsum dolor sit amet
 + This project is conducted by [your name]
