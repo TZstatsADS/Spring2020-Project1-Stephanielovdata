@@ -8,7 +8,7 @@ The goal of this project is to look deeper into the patterns and characteristics
 
 ### Datasets
 
-"lyrics.csv" is a filtered corpus of 100,000+ song lyrics from from MetroLyrics. You can find the complete 380,000+ song lyrics data on [Kaggle](https://www.kaggle.com/gyani95/380000-lyrics-from-metrolyrics).
+"lyrics.csv" ([Download(https://www.dropbox.com/s/3tfv5v73z0ec8vr/lyrics.csv?dl=0)])is a filtered corpus of 100,000+ song lyrics from from MetroLyrics. You can find the complete 380,000+ song lyrics data on [Kaggle](https://www.kaggle.com/gyani95/380000-lyrics-from-metrolyrics).
 
 "artists.csv" provides the background information of all the artistis. These information are scraped from [LyricsFreak](https://www.lyricsfreak.com/).
 
