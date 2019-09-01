@@ -37,7 +37,7 @@ This is a relatively short project. We only have about two weeks of working time
 3. [wk2] Explore data for interesting trends and start writing your data story. 
 
 #### Submission
-You should produce an R notebook (rmd and html files) in your GitHub project folder, where you should write a story or a blog post on happy moments based on your data analysis. Your story should be supported by your results and appropriate visualization
+You should produce an R notebook (rmd and html files) in your GitHub project folder, where you should write a story or a blog post on song lyrics based on your data analysis. Your story should be supported by your results and appropriate visualization.
 
 #### Repositary requirement
 
