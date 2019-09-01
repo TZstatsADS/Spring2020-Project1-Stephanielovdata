@@ -8,9 +8,9 @@ output: html_notebook
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-"lyrics_filter.csv" is a filtered corpus of 380,000+ song lyrics from from MetroLyrics. You can read more about it on [Kaggle](https://www.kaggle.com/gyani95/380000-lyrics-from-metrolyrics).
+"lyrics.csv" is a filtered corpus of 380,000+ song lyrics from from MetroLyrics. You can read more about it on [Kaggle](https://www.kaggle.com/gyani95/380000-lyrics-from-metrolyrics).
 
-"info_artist.csv" provides the background information of all the artistis. These information are scraped from [LyricsFreak](https://www.lyricsfreak.com/).
+"artists.csv" provides the background information of all the artistis. These information are scraped from [LyricsFreak](https://www.lyricsfreak.com/).
 
 In this R notebook, we process the raw textual data for our data analysis.
 
@@ -47,11 +47,18 @@ We clean the text by converting all the letters to the lower case, and removing 
 ```{r text processing in tm}
 # function for removimg leading and trailing whitespace from character strings 
 leadingWhitespace <- content_transformer(function(x) str_trim(x, side = "both"))
+# remove stop words
+data("stop_words")
+word <- c("lot", "today", "months", "month", "wanna", "wouldnt", "wasnt",
+        "gonna", "im", "dont", "aint", "wont", "yeah", "la", "oi", "nigga", "fuck",
+          "hey", "year","years","last","past")
+stop_words <- c(stop_words$word, word)
 # clean the data and make a corpus
 corpus <- VCorpus(VectorSource(dt_lyrics$lyrics))%>%
   tm_map(content_transformer(tolower))%>%
   tm_map(removePunctuation)%>%
   tm_map(removeWords, character(0))%>%
+  tm_map(removeWords, stop_words)%>%
   tm_map(removeNumbers)%>%
   tm_map(stripWhitespace)%>%
   tm_map(leadingWhitespace)
@@ -78,21 +85,7 @@ dict <- tidy(corpus) %>%
   unnest_tokens(dictionary, text)
 ```
 
-### Step 5 - Removing stopwords that don't hold any significant information for our data set
-
-We remove stopwords provided by the "tidytext" package and also add custom stopwords in context of our data.
-
-```{r stopwords}
-data("stop_words")
-
-word <- c("lot","today","months","month",
-                 "year","years","last","past")
-
-stop_words <- stop_words %>%
-  bind_rows(mutate(tibble(word), lexicon = "updated"))
-```
-
-### Step 6 - Combining stems and dictionary into the same tibble
+### Step 5 - Combining stems and dictionary into the same tibble
 
 Here we combine the stems and the dictionary into the same "tidy" object.
 
@@ -100,11 +93,10 @@ Here we combine the stems and the dictionary into the same "tidy" object.
 completed <- stemmed %>%
   mutate(id = row_number()) %>%
   unnest_tokens(stems, text) %>%
-  bind_cols(dict) %>%
-  anti_join(stop_words, by = c("dictionary" = "word"))
+  bind_cols(dict) 
 ```
 
-### Step 7 - Stem completion
+### Step 6 - Stem completion
 
 Lastly, we complete the stems by picking the corresponding word with the highest frequency.
 
@@ -127,7 +119,7 @@ We want our processed words to resemble the structure of the original lyrics. So
 ```{r reverse unnest}
 completed <- completed %>%
   group_by(id) %>%
-  summarise(text = str_c(word, collapse = " ")) %>%
+  summarise(stemmedwords= str_c(word, collapse = " ")) %>%
   ungroup()
 ```
 
@@ -137,8 +129,6 @@ completed <- completed %>%
 dt_lyrics <- dt_lyrics %>%
   mutate(id = row_number()) %>%
   inner_join(completed)
-
-datatable(dt_lyrics)
 ```
 
 ### Exporting the processed text data into a CSV file
