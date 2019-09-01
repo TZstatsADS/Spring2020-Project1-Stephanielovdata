@@ -49,9 +49,9 @@ We clean the text by converting all the letters to the lower case, and removing 
 leadingWhitespace <- content_transformer(function(x) str_trim(x, side = "both"))
 # remove stop words
 data("stop_words")
-word <- c("lot", "today", "months", "month", "wanna", "wouldnt", "wasnt",
+word <- c("lot", "today", "months", "month", "wanna", "wouldnt", "wasnt", "ha", "na", "ooh", "da",
         "gonna", "im", "dont", "aint", "wont", "yeah", "la", "oi", "nigga", "fuck",
-          "hey", "year","years","last","past")
+          "hey", "year", "years", "last", "past", "feel")
 stop_words <- c(stop_words$word, word)
 # clean the data and make a corpus
 corpus <- VCorpus(VectorSource(dt_lyrics$lyrics))%>%
