@@ -4,13 +4,15 @@
 
 <img src="../figs/title.png" width="300">
 
+Which song do you like the best? Do you have a favourite singer or band?
+
 The goal of this project is to look deeper into the patterns and characteristics of different types of song lyrics. Natural language processing and text mining are natural tools to derive interesting findings in this collection of song lyrics. 
 
 ### Datasets
 
-"lyrics.csv" ([Download(https://www.dropbox.com/s/3tfv5v73z0ec8vr/lyrics.csv?dl=0)])is a filtered corpus of 100,000+ song lyrics from from MetroLyrics. You can find the complete 380,000+ song lyrics data on [Kaggle](https://www.kaggle.com/gyani95/380000-lyrics-from-metrolyrics).
+"lyrics.csv" ([Download](https://www.dropbox.com/s/3tfv5v73z0ec8vr/lyrics.csv?dl=0)) is a filtered corpus of 100,000+ song lyrics from MetroLyrics. Available features are song name, year, artist, genre, and lyrics. You can find the complete 380,000+ song lyrics data on [Kaggle](https://www.kaggle.com/gyani95/380000-lyrics-from-metrolyrics).
 
-"artists.csv" provides the background information of all the artistis. These information are scraped from [LyricsFreak](https://www.lyricsfreak.com/).
+"artists.csv" (in GitHub \data folder) provides the background information of all the artistis. These information are scraped from [LyricsFreak](https://www.lyricsfreak.com/). For the singers, a detailed biography is provided. And for the bands, available information are members, established year and location.
 
 
 ### Challenge 
@@ -18,8 +20,6 @@ The goal of this project is to look deeper into the patterns and characteristics
 In this project you will carry out an exploratory data analysis of the corpus of song lyrics and write a blog on interesting findings.
 
 You are tasked to explore the texts using tools from text mining and natural language processing such as sentiment analysis, topic modeling, etc, all available in `R` and write a blog post using `R` Notebook. Your blog should be in the form of a `data story` blog on interesting trends and patterns identified by your analysis of these song lyrics. 
-
-Data from the HappyDB project can be found on [GitHub](https://github.com/rit-public/HappyDB/tree/master/happydb/data). Before carrying out any analysis, you should read the [description of the data files](https://github.com/rit-public/HappyDB).
 
 Even though this is an individual project, you are **encouraged** to discuss with your classmates online and exchange ideas. 
 
@@ -30,7 +30,7 @@ A GitHub starter codes repo will be posted on piazza for you to fork and start y
 #### Suggested workflow
 This is a relatively short project. We only have about two weeks of working time. In the starter codes, we provide you two basic data processing R notebooks to get you started. 
 
-`Text_processing.rmd` cleans the text data while `HappyDB_RShiny.rmd` constrcuts a shiny app to quickly explore the data. There is not much detailed data analysis of the text data at the *moments* level, which should be the focus of your analysis.
+`Text_processing.rmd` cleans the text data while `Lyrics_ShinyApp.rmd` constrcuts a shiny app to quickly explore the data. 
 
 1. [wk1] Week 1 is the **data processing and mining** week. Read data description, **project requirement**, browse data and studies the R notebooks in the starter codes, and think about what to do and try out different tools you find related to this task.
 2. [wk1] Try out ideas on a *subset* of the data set to get a sense of computational burden of this project. 
