@@ -1,6 +1,6 @@
 ---
 title: "Stem Completion"
-author: "Chengliang Tang, Arpita Shah and Tian Zheng"
+author: "Chengliang Tang, Arpita Shah, Yujie Wang and Tian Zheng"
 output: html_notebook
 ---
 
@@ -36,7 +36,7 @@ library(DT)
 
 ```{r}
 # load lyrics data
-dt_lyrics <- fread('../data/lyrics.csv') 
+load('../data/lyrics.RData') 
 ```
 
 
@@ -134,7 +134,7 @@ dt_lyrics <- dt_lyrics %>%
 ### Exporting the processed text data into a CSV file
 
 ```{r export data}
-write_csv(dt_lyrics, "../output/processed_lyrics.csv")
+save(dt_lyrics, file="../output/processed_lyrics.RData")
 ```
 
 The final processed data is ready to be used for any kind of analysis.

@@ -1,6 +1,6 @@
 ---
 title: "Lyrics ShinyApp"
-author: "Chengliang Tang, Arpita Shah and Tian Zheng"
+author: "Chengliang Tang, Arpita Shah, Yujie Wang and Tian Zheng"
 output: html_notebook
 runtime: shiny
 ---
@@ -48,7 +48,7 @@ We use the processed data and artist information for our analysis.
 
 ```{r load data, warning=FALSE, message=FALSE}
 # load lyrics data
-dt_lyrics <- fread('../output/processed_lyrics.csv') 
+load('../output/processed_lyrics.RData') 
 # load artist information
 dt_artist <- fread('../data/artists.csv') 
 ```
