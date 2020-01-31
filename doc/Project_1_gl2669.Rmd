@@ -58,7 +58,8 @@ tidy_lyrics %>%
 ```
 
 ### ggplot and create a visualization of the most common words
-rock lyrics plot
+rock lyrics plot 
+rock: love, time, yeah, baby, gonna, feel, life, day. night, world, heart
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 library(ggplot2)
@@ -79,7 +80,8 @@ rock_lyrics_most_frequencies_plot <- tidy_lyrics %>%
 rock_lyrics_most_frequencies_plot 
 ```
 
-### country lyrics ggplot
+### pop lyrics ggplot
+pop: love, baby, time, yeah, heart, feel, gonna, life, wanna
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 pop_lyrics_most_frequencies_plot <- tidy_lyrics %>%
@@ -99,6 +101,7 @@ pop_lyrics_most_frequencies_plot
 ```
 
 ### Hip-Hop lyrics plot
+Hip-Hop: nigga, love, yeah, shit, ya, yo, time, baby, fuck, em, niggas
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 hiphop_lyrics_most_frequencies_plot <- tidy_lyrics %>%
@@ -116,6 +119,8 @@ hiphop_lyrics_most_frequencies_plot <- tidy_lyrics %>%
 hiphop_lyrics_most_frequencies_plot
 ```
 ### Country lyrics plot
+Country: love, time, heart, gonna, baby, night, day, home, yeah, life
+
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 country_lyrics_most_frequencies_plot <- tidy_lyrics %>%
   group_by(genre) %>%
@@ -133,6 +138,7 @@ country_lyrics_most_frequencies_plot
 ```
 
 ### Metal lyrics plot
+Metal: life, time, world, eyes, love, feel, blood, death, pain, dies
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 metal_lyrics_most_frequencies_plot <- tidy_lyrics %>%
   group_by(genre) %>%
@@ -155,13 +161,13 @@ levels(factor(tidy_lyrics$genre) )
 ```
 
 ### Electronic lyrics plot
-
+Electronic: love, feel, time, yeah, world, baby, night, life, gonna, wanna
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 electronic_lyrics_most_frequencies_plot <- tidy_lyrics %>%
   group_by(genre) %>%
   count(word, sort = TRUE) %>%
   filter(genre == "Electronic") %>%
-  filter(n > 1500) %>%
+  filter(n > 1000) %>%
   mutate(word = reorder(word, n)) %>%
   ggplot(aes(word,n, color = word, fill = word)) +
   geom_col() +
@@ -174,7 +180,7 @@ electronic_lyrics_most_frequencies_plot
 ```
 
 ### Jazz lyrics plot
-
+Jazz: love, baby, heart, time, day, night, gonna, life, feel
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 jazz_lyrics_most_frequencies_plot <- tidy_lyrics %>%
   group_by(genre) %>%
@@ -192,6 +198,7 @@ jazz_lyrics_most_frequencies_plot
 ```
 
 ### R&B lyrics plot
+R&B: love, baby, yeah, time, girl, gonna, heart, feel, day, life, wanna
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 rb_lyrics_most_frequencies_plot <- tidy_lyrics %>%
   group_by(genre) %>%
@@ -209,6 +216,7 @@ rb_lyrics_most_frequencies_plot
 ```
 
 ### Indie lyrics plot
+Indie: love, time, home, heart, feel, gonna, life, eyes, day, mind
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 indie_lyrics_most_frequencies_plot <- tidy_lyrics %>%
@@ -228,13 +236,14 @@ indie_lyrics_most_frequencies_plot
 ```
 
 ### Folk lyrics plot
+Folk: love, time, day, yeah, gonna, home, night, world, hear, life, heart, baby, sea
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 folk_lyrics_most_frequencies_plot <- tidy_lyrics %>%
   group_by(genre) %>%
   count(word, sort = TRUE) %>%
   filter(genre == "Folk") %>%
-  filter(n > 100) %>%
+  filter(n > 120) %>%
   mutate(word = reorder(word, n)) %>%
   ggplot(aes(word,n, color = word, fill = word)) +
   geom_col() +
@@ -246,9 +255,37 @@ folk_lyrics_most_frequencies_plot <- tidy_lyrics %>%
 folk_lyrics_most_frequencies_plot
 ```
 
-### Summary
+### Summary of 12 types of lyrics
+#Rock, Pop and Hip-Hop are the three largest lyrics. 
+#Feeling is for most artists who want to deliver from the songs. (key word: feel)
+#Inspiration is always from the lives of the artists. (key word: life)
+#Love is the main theme for most of the lyrics excerpt for the Metal (Love)
+#Not only Hip-Hop but also other lyrics like to use rhyme words such as "Yeah"
+Top Frequencies words based on the lyrics: 
 
+Category 1: Positive
+common words: love, time, yeah, life, world, wanna, gonna, day, night, feel 
 
+rock: love, time, yeah, baby, gonna, feel, life, day. night, world, heart
+pop: love, baby, time, yeah, heart, feel, gonna, life, wanna
+Country: love, time, heart, gonna, baby, night, day, home, yeah, life
+Electronic: love, feel, time, yeah, world, baby, night, life, gonna, wanna
+Jazz: love, baby, heart, time, day, night, gonna, life, feel
+Indie: love, time, home, heart, feel, gonna, life, eyes, day, mind
+Folk: love, time, day, yeah, gonna, home, night, world, hear, life, heart, baby, sea
+
+Category 2: Rhyme
+R&B: love, baby, yeah, time, girl, gonna, heart, feel, day, life, wanna
+Hip-Hop: nigga, love, yeah, shit, ya, yo, time, baby, fuck, em, niggas
+
+Category 3: Negative
+Metal: life, time, world, eyes, love, feel, blood, death, pain, dies
+
+Rock, pop, country, electronic, Jazz, Indie and Folk songs are about love and other positive feelings. Some artists talk about home, world and life (day and night) while others talk about the people they are in love with. 
+
+Hip-Hop are usually about love stories and include rhyme like ya, yo, em. 
+
+Metal is the only one which has many negative words (death, blood) as top frequencies words. 
 
 ### References
-
+https://www.tidytextmining.com/tidytext.html
