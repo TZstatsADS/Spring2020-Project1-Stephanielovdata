@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Step 0 - Load all the required libraries
 
-```{r cars}
+```{r echo=FALSE,message=FALSE,warning=FALSE}
 library(tm)
 library(data.table)
 library(tidytext)
@@ -20,7 +20,7 @@ library(DT)
 
 ### Step 1 - Load the data to be cleaned and processed
 
-```{r}
+```{r echo=FALSE,message=FALSE,warning=FALSE}
 # load lyrics data
 load('../data/lyrics.RData') 
 lyrics <- dt_lyrics
@@ -29,7 +29,7 @@ head(lyrics)
 
 ### Step 2 - stemming words
 
-```{r}
+```{r echo=FALSE,message=FALSE,warning=FALSE}
 
 original_lyrics <- lyrics %>% 
   group_by(artist) %>%
@@ -42,7 +42,7 @@ tidy_lyrics
 ```
 
 ### stop words
-```{r}
+```{r echo=FALSE,message=FALSE,warning=FALSE}
 data("stop_words")
 tidy_lyrics <- tidy_lyrics  %>%
   anti_join(stop_words)
@@ -51,7 +51,7 @@ tidy_lyrics
 
 ### count and find the most common words in all the lyrics as a whole
 
-```{r}
+```{r echo=FALSE,message=FALSE,warning=FALSE}
 tidy_lyrics %>%
   group_by(genre) %>%
   count(word, sort = TRUE)
@@ -60,7 +60,7 @@ tidy_lyrics %>%
 ### ggplot and create a visualization of the most common words
 rock lyrics plot
 
-```{r}
+```{r echo=FALSE,message=FALSE,warning=FALSE}
 library(ggplot2)
 
 rock_lyrics_most_frequencies_plot <- tidy_lyrics %>%
@@ -81,7 +81,7 @@ rock_lyrics_most_frequencies_plot
 
 ### country lyrics ggplot
 
-```{r}
+```{r echo=FALSE,message=FALSE,warning=FALSE}
 pop_lyrics_most_frequencies_plot <- tidy_lyrics %>%
   group_by(genre) %>%
   count(word, sort = TRUE) %>%
@@ -100,7 +100,7 @@ pop_lyrics_most_frequencies_plot
 
 ### Hip-Hop lyrics plot
 
-```{r}
+```{r echo=FALSE,message=FALSE,warning=FALSE}
 hiphop_lyrics_most_frequencies_plot <- tidy_lyrics %>%
   group_by(genre) %>%
   count(word, sort = TRUE) %>%
@@ -116,7 +116,7 @@ hiphop_lyrics_most_frequencies_plot <- tidy_lyrics %>%
 hiphop_lyrics_most_frequencies_plot
 ```
 ### Country lyrics plot
-```{r}
+```{r echo=FALSE,message=FALSE,warning=FALSE}
 country_lyrics_most_frequencies_plot <- tidy_lyrics %>%
   group_by(genre) %>%
   count(word, sort = TRUE) %>%
@@ -133,7 +133,7 @@ country_lyrics_most_frequencies_plot
 ```
 
 ### Metal lyrics plot
-```{r}
+```{r echo=FALSE,message=FALSE,warning=FALSE}
 metal_lyrics_most_frequencies_plot <- tidy_lyrics %>%
   group_by(genre) %>%
   count(word, sort = TRUE) %>%
@@ -150,13 +150,13 @@ metal_lyrics_most_frequencies_plot
 ```
 
 ###
-```{r}
+```{r echo=FALSE,message=FALSE,warning=FALSE}
 levels(factor(tidy_lyrics$genre) )
 ```
 
 ### Electronic lyrics plot
 
-```{r}
+```{r echo=FALSE,message=FALSE,warning=FALSE}
 electronic_lyrics_most_frequencies_plot <- tidy_lyrics %>%
   group_by(genre) %>%
   count(word, sort = TRUE) %>%
@@ -175,7 +175,7 @@ electronic_lyrics_most_frequencies_plot
 
 ### Jazz lyrics plot
 
-```{r}
+```{r echo=FALSE,message=FALSE,warning=FALSE}
 jazz_lyrics_most_frequencies_plot <- tidy_lyrics %>%
   group_by(genre) %>%
   count(word, sort = TRUE) %>%
@@ -192,7 +192,7 @@ jazz_lyrics_most_frequencies_plot
 ```
 
 ### R&B lyrics plot
-```{r}
+```{r echo=FALSE,message=FALSE,warning=FALSE}
 rb_lyrics_most_frequencies_plot <- tidy_lyrics %>%
   group_by(genre) %>%
   count(word, sort = TRUE) %>%
@@ -210,7 +210,7 @@ rb_lyrics_most_frequencies_plot
 
 ### Indie lyrics plot
 
-```{r}
+```{r echo=FALSE,message=FALSE,warning=FALSE}
 indie_lyrics_most_frequencies_plot <- tidy_lyrics %>%
   group_by(genre) %>%
   count(word, sort = TRUE) %>%
@@ -229,7 +229,7 @@ indie_lyrics_most_frequencies_plot
 
 ### Folk lyrics plot
 
-```{r}
+```{r echo=FALSE,message=FALSE,warning=FALSE}
 folk_lyrics_most_frequencies_plot <- tidy_lyrics %>%
   group_by(genre) %>%
   count(word, sort = TRUE) %>%
@@ -245,3 +245,10 @@ folk_lyrics_most_frequencies_plot <- tidy_lyrics %>%
 
 folk_lyrics_most_frequencies_plot
 ```
+
+### Summary
+
+
+
+### References
+
