@@ -57,202 +57,92 @@ tidy_lyrics %>%
   count(word, sort = TRUE)
 ```
 
-### ggplot and create a visualization of the most common words
-rock lyrics plot 
-rock: love, time, yeah, baby, gonna, feel, life, day. night, world, heart
-
-```{r echo=FALSE,message=FALSE,warning=FALSE}
-library(ggplot2)
-
-rock_lyrics_most_frequencies_plot <- tidy_lyrics %>%
-  group_by(genre) %>%
-  count(word, sort = TRUE) %>%
-  filter(genre == "Rock") %>%
-  filter(n > 20000) %>%
-  mutate(word = reorder(word, n)) %>%
-  ggplot(aes(word,n, color = word, fill = word)) +
-  geom_col() +
-  labs(title = "Top Frequencies Words of Rock") +
-  coord_flip() +
-  theme_light() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
-
-rock_lyrics_most_frequencies_plot 
-```
-
-### pop lyrics ggplot
-pop: love, baby, time, yeah, heart, feel, gonna, life, wanna
-
-```{r echo=FALSE,message=FALSE,warning=FALSE}
-pop_lyrics_most_frequencies_plot <- tidy_lyrics %>%
-  group_by(genre) %>%
-  count(word, sort = TRUE) %>%
-  filter(genre == "Pop") %>%
-  filter(n > 10000) %>%
-  mutate(word = reorder(word, n)) %>%
-  ggplot(aes(word,n, color = word, fill = word)) +
-  geom_col() +
-  labs(title = "Top Frequencies Words of Pop") +
-  coord_flip() +
-  theme_light() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
-
-pop_lyrics_most_frequencies_plot
-```
-
-### Hip-Hop lyrics plot
-Hip-Hop: nigga, love, yeah, shit, ya, yo, time, baby, fuck, em, niggas
-
-```{r echo=FALSE,message=FALSE,warning=FALSE}
-hiphop_lyrics_most_frequencies_plot <- tidy_lyrics %>%
-  group_by(genre) %>%
-  count(word, sort = TRUE) %>%
-  filter(genre == "Hip-Hop") %>%
-  filter(n > 10000) %>%
-  mutate(word = reorder(word, n)) %>%
-  ggplot(aes(word,n, color = word, fill = word)) +
-  geom_col() +
-  labs(title = "Top Frequencies Words of Hip-Hop") +
-  coord_flip() +
-  theme_light() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
-hiphop_lyrics_most_frequencies_plot
-```
-### Country lyrics plot
-Country: love, time, heart, gonna, baby, night, day, home, yeah, life
-
-```{r echo=FALSE,message=FALSE,warning=FALSE}
-country_lyrics_most_frequencies_plot <- tidy_lyrics %>%
-  group_by(genre) %>%
-  count(word, sort = TRUE) %>%
-  filter(genre == "Country") %>%
-  filter(n > 2500) %>%
-  mutate(word = reorder(word, n)) %>%
-  ggplot(aes(word,n, color = word, fill = word)) +
-  geom_col() +
-  labs(title = "Top Frequencies Words of Country") +
-  coord_flip() +
-  theme_light() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
-country_lyrics_most_frequencies_plot
-```
-
-### Metal lyrics plot
-Metal: life, time, world, eyes, love, feel, blood, death, pain, dies
-```{r echo=FALSE,message=FALSE,warning=FALSE}
-metal_lyrics_most_frequencies_plot <- tidy_lyrics %>%
-  group_by(genre) %>%
-  count(word, sort = TRUE) %>%
-  filter(genre == "Metal") %>%
-  filter(n > 3500) %>%
-  mutate(word = reorder(word, n)) %>%
-  ggplot(aes(word,n, color = word, fill = word)) +
-  geom_col() +
-  labs(title = "Top Frequencies Words of Metal") +
-  coord_flip() +
-  theme_light() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
-metal_lyrics_most_frequencies_plot
-```
-
 ###
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 levels(factor(tidy_lyrics$genre) )
 ```
 
-### Electronic lyrics plot
-Electronic: love, feel, time, yeah, world, baby, night, life, gonna, wanna
-```{r echo=FALSE,message=FALSE,warning=FALSE}
-electronic_lyrics_most_frequencies_plot <- tidy_lyrics %>%
-  group_by(genre) %>%
-  count(word, sort = TRUE) %>%
-  filter(genre == "Electronic") %>%
-  filter(n > 1000) %>%
-  mutate(word = reorder(word, n)) %>%
-  ggplot(aes(word,n, color = word, fill = word)) +
-  geom_col() +
-  labs(title = "Top Frequencies Words of Electronic") +
-  coord_flip() +
-  theme_light() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+### WordCloud
 
-electronic_lyrics_most_frequencies_plot
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+library(wordcloud)
+
+tidy_lyrics %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
 ```
 
-### Jazz lyrics plot
-Jazz: love, baby, heart, time, day, night, gonna, life, feel
+### positive vs negative wordcloud
+
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
-jazz_lyrics_most_frequencies_plot <- tidy_lyrics %>%
-  group_by(genre) %>%
-  count(word, sort = TRUE) %>%
-  filter(genre == "Jazz") %>%
-  filter(n > 1030) %>%
-  mutate(word = reorder(word, n)) %>%
-  ggplot(aes(word,n, color = word, fill = word)) +
-  geom_col() +
-  labs(title = "Top Frequencies Words of Jazz") +
-  coord_flip() +
-  theme_light() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
-jazz_lyrics_most_frequencies_plot
+library(reshape2)
+
+tidy_lyrics %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = c("gray20", "gray80"),
+                   max.words = 100)
 ```
 
-### R&B lyrics plot
-R&B: love, baby, yeah, time, girl, gonna, heart, feel, day, life, wanna
+### summary plot
+
+
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
-rb_lyrics_most_frequencies_plot <- tidy_lyrics %>%
+tidy_lyrics %>%
+  filter(genre != "Not Available" & genre != "Other") %>%
   group_by(genre) %>%
   count(word, sort = TRUE) %>%
-  filter(genre == "R&B") %>%
-  filter(n > 1000) %>%
+  top_n(10) %>% 
+  ungroup() %>%
   mutate(word = reorder(word, n)) %>%
   ggplot(aes(word,n, color = word, fill = word)) +
-  geom_col() +
-  labs(title = "Top Frequencies Words of R&B") +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~genre, ncol = 3, scales = "free") +
   coord_flip() +
+  labs(y = "n") +
   theme_light() +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
-rb_lyrics_most_frequencies_plot
+
 ```
 
-### Indie lyrics plot
-Indie: love, time, home, heart, feel, gonna, life, eyes, day, mind
 
+
+### tf-idf 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
-indie_lyrics_most_frequencies_plot <- tidy_lyrics %>%
+# still need to learn how to use td idf 
+lyrics_by_genre <- tidy_lyrics %>%
   group_by(genre) %>%
-  count(word, sort = TRUE) %>%
-  filter(genre == "Indie") %>%
-  filter(n > 400) %>%
-  mutate(word = reorder(word, n)) %>%
-  ggplot(aes(word,n, color = word, fill = word)) +
-  geom_col() +
-  labs(title = "Top Frequencies Words of Indie") +
-  coord_flip() +
-  theme_light() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+  count(genre, word, sort = TRUE)
 
-indie_lyrics_most_frequencies_plot
+tf_idf <- lyrics_by_genre %>%
+  bind_tf_idf(word, genre, n) %>%
+  arrange(desc(tf_idf))
+
+
+tf_idf
+
 ```
 
-### Folk lyrics plot
-Folk: love, time, day, yeah, gonna, home, night, world, hear, life, heart, baby, sea
+# plot after tf-idf
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
-folk_lyrics_most_frequencies_plot <- tidy_lyrics %>%
+
+tf_idf %>%
+  filter(genre != "Not Available" & genre != "Other") %>%
   group_by(genre) %>%
-  count(word, sort = TRUE) %>%
-  filter(genre == "Folk") %>%
-  filter(n > 120) %>%
-  mutate(word = reorder(word, n)) %>%
-  ggplot(aes(word,n, color = word, fill = word)) +
-  geom_col() +
-  labs(title = "Top Frequencies Words of Folk") +
+  top_n(10, tf_idf) %>% 
+  ungroup() %>%  
+  mutate(word = reorder(word, tf_idf)) %>%
+  ggplot(aes(word,tf_idf,fill = genre)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~genre, ncol = 3, scales = "free") +
   coord_flip() +
+  labs(y = "tf-idf") +
   theme_light() +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
 
-folk_lyrics_most_frequencies_plot
 ```
 
 ### Summary of 12 types of lyrics
@@ -290,85 +180,7 @@ Metal is the only one which has many negative words (death, blood) as top freque
 ### References
 https://www.tidytextmining.com/tidytext.html
 
-### summary plot
-
-
-```{r}
-tidy_lyrics %>%
-  group_by(genre) %>%
-  count(word, sort = TRUE) %>%
-  top_n(10) %>% 
-  ungroup() %>%
-  mutate(word = reorder(word, n)) %>%
-  ggplot(aes(word,n, color = word, fill = word)) +
-  geom_col(show.legend = FALSE) +
-  facet_wrap(~genre, ncol = 3, scales = "free") +
-  coord_flip() +
-  labs(y = "n") +
-  theme_light() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
-
-```
 
 
 
-### tf-idf 
-```{r}
-# still need to learn how to use td idf 
-lyrics_by_genre <- tidy_lyrics %>%
-  group_by(genre) %>%
-  count(genre, word, sort = TRUE)
-
-tf_idf <- lyrics_by_genre %>%
-  bind_tf_idf(word, genre, n) %>%
-  arrange(desc(tf_idf))
-
-
-tf_idf
-
-```
-
-# plot 
-
-```{r}
-
-tf_idf %>%
-  filter(genre != "Not Available" & genre != "Other") %>%
-  group_by(genre) %>%
-  top_n(10, tf_idf) %>% 
-  ungroup() %>%  
-  mutate(word = reorder(word, tf_idf)) %>%
-  ggplot(aes(word,tf_idf,fill = genre)) +
-  geom_col(show.legend = FALSE) +
-  facet_wrap(~genre, ncol = 3, scales = "free") +
-  coord_flip() +
-  labs(y = "tf-idf") +
-  theme_light() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
-
-```
-
-
-### WordCloud
-
-```{r}
-library(wordcloud)
-
-tidy_lyrics %>%
-  anti_join(stop_words) %>%
-  count(word) %>%
-  with(wordcloud(word, n, max.words = 100))
-```
-### positive vs negative wordcloud
-
-```{r}
-library(reshape2)
-
-tidy_lyrics %>%
-  inner_join(get_sentiments("bing")) %>%
-  count(word, sentiment, sort = TRUE) %>%
-  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
-  comparison.cloud(colors = c("gray20", "gray80"),
-                   max.words = 100)
-```
 
