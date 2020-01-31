@@ -1,0 +1,247 @@
+---
+title: "Project_1_gl2669"
+Author: "Guoying Li"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Step 0 - Load all the required libraries
+
+```{r cars}
+library(tm)
+library(data.table)
+library(tidytext)
+library(tidyverse)
+library(DT)
+```
+
+### Step 1 - Load the data to be cleaned and processed
+
+```{r}
+# load lyrics data
+load('../data/lyrics.RData') 
+lyrics <- dt_lyrics
+head(lyrics)
+```
+
+### Step 2 - stemming words
+
+```{r}
+
+original_lyrics <- lyrics %>% 
+  group_by(artist) %>%
+  mutate(linenumber = row_number()) %>%
+  ungroup()
+
+tidy_lyrics <- original_lyrics %>% 
+  unnest_tokens(word, lyrics)
+tidy_lyrics
+```
+
+### stop words
+```{r}
+data("stop_words")
+tidy_lyrics <- tidy_lyrics  %>%
+  anti_join(stop_words)
+tidy_lyrics
+```
+
+### count and find the most common words in all the lyrics as a whole
+
+```{r}
+tidy_lyrics %>%
+  group_by(genre) %>%
+  count(word, sort = TRUE)
+```
+
+### ggplot and create a visualization of the most common words
+rock lyrics plot
+
+```{r}
+library(ggplot2)
+
+rock_lyrics_most_frequencies_plot <- tidy_lyrics %>%
+  group_by(genre) %>%
+  count(word, sort = TRUE) %>%
+  filter(genre == "Rock") %>%
+  filter(n > 20000) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word,n, color = word, fill = word)) +
+  geom_col() +
+  labs(title = "Top Frequencies Words of Rock") +
+  coord_flip() +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+
+rock_lyrics_most_frequencies_plot 
+```
+
+### country lyrics ggplot
+
+```{r}
+pop_lyrics_most_frequencies_plot <- tidy_lyrics %>%
+  group_by(genre) %>%
+  count(word, sort = TRUE) %>%
+  filter(genre == "Pop") %>%
+  filter(n > 10000) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word,n, color = word, fill = word)) +
+  geom_col() +
+  labs(title = "Top Frequencies Words of Pop") +
+  coord_flip() +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+
+pop_lyrics_most_frequencies_plot
+```
+
+### Hip-Hop lyrics plot
+
+```{r}
+hiphop_lyrics_most_frequencies_plot <- tidy_lyrics %>%
+  group_by(genre) %>%
+  count(word, sort = TRUE) %>%
+  filter(genre == "Hip-Hop") %>%
+  filter(n > 10000) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word,n, color = word, fill = word)) +
+  geom_col() +
+  labs(title = "Top Frequencies Words of Hip-Hop") +
+  coord_flip() +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+hiphop_lyrics_most_frequencies_plot
+```
+### Country lyrics plot
+```{r}
+country_lyrics_most_frequencies_plot <- tidy_lyrics %>%
+  group_by(genre) %>%
+  count(word, sort = TRUE) %>%
+  filter(genre == "Country") %>%
+  filter(n > 2500) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word,n, color = word, fill = word)) +
+  geom_col() +
+  labs(title = "Top Frequencies Words of Country") +
+  coord_flip() +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+country_lyrics_most_frequencies_plot
+```
+
+### Metal lyrics plot
+```{r}
+metal_lyrics_most_frequencies_plot <- tidy_lyrics %>%
+  group_by(genre) %>%
+  count(word, sort = TRUE) %>%
+  filter(genre == "Metal") %>%
+  filter(n > 3500) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word,n, color = word, fill = word)) +
+  geom_col() +
+  labs(title = "Top Frequencies Words of Metal") +
+  coord_flip() +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+metal_lyrics_most_frequencies_plot
+```
+
+###
+```{r}
+levels(factor(tidy_lyrics$genre) )
+```
+
+### Electronic lyrics plot
+
+```{r}
+electronic_lyrics_most_frequencies_plot <- tidy_lyrics %>%
+  group_by(genre) %>%
+  count(word, sort = TRUE) %>%
+  filter(genre == "Electronic") %>%
+  filter(n > 1500) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word,n, color = word, fill = word)) +
+  geom_col() +
+  labs(title = "Top Frequencies Words of Electronic") +
+  coord_flip() +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+
+electronic_lyrics_most_frequencies_plot
+```
+
+### Jazz lyrics plot
+
+```{r}
+jazz_lyrics_most_frequencies_plot <- tidy_lyrics %>%
+  group_by(genre) %>%
+  count(word, sort = TRUE) %>%
+  filter(genre == "Jazz") %>%
+  filter(n > 1030) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word,n, color = word, fill = word)) +
+  geom_col() +
+  labs(title = "Top Frequencies Words of Jazz") +
+  coord_flip() +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+jazz_lyrics_most_frequencies_plot
+```
+
+### R&B lyrics plot
+```{r}
+rb_lyrics_most_frequencies_plot <- tidy_lyrics %>%
+  group_by(genre) %>%
+  count(word, sort = TRUE) %>%
+  filter(genre == "R&B") %>%
+  filter(n > 1000) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word,n, color = word, fill = word)) +
+  geom_col() +
+  labs(title = "Top Frequencies Words of R&B") +
+  coord_flip() +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+rb_lyrics_most_frequencies_plot
+```
+
+### Indie lyrics plot
+
+```{r}
+indie_lyrics_most_frequencies_plot <- tidy_lyrics %>%
+  group_by(genre) %>%
+  count(word, sort = TRUE) %>%
+  filter(genre == "Indie") %>%
+  filter(n > 400) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word,n, color = word, fill = word)) +
+  geom_col() +
+  labs(title = "Top Frequencies Words of Indie") +
+  coord_flip() +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+
+indie_lyrics_most_frequencies_plot
+```
+
+### Folk lyrics plot
+
+```{r}
+folk_lyrics_most_frequencies_plot <- tidy_lyrics %>%
+  group_by(genre) %>%
+  count(word, sort = TRUE) %>%
+  filter(genre == "Folk") %>%
+  filter(n > 100) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word,n, color = word, fill = word)) +
+  geom_col() +
+  labs(title = "Top Frequencies Words of Folk") +
+  coord_flip() +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+
+folk_lyrics_most_frequencies_plot
+```
