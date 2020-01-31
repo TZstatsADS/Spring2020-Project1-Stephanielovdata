@@ -256,11 +256,11 @@ folk_lyrics_most_frequencies_plot
 ```
 
 ### Summary of 12 types of lyrics
-#Rock, Pop and Hip-Hop are the three largest lyrics. 
-#Feeling is for most artists who want to deliver from the songs. (key word: feel)
-#Inspiration is always from the lives of the artists. (key word: life)
-#Love is the main theme for most of the lyrics excerpt for the Metal (Love)
-#Not only Hip-Hop but also other lyrics like to use rhyme words such as "Yeah"
+###Rock, Pop and Hip-Hop are the three largest lyrics. 
+###Feeling is for most artists who want to deliver from the songs. (key word: feel)
+###Inspiration is always from the lives of the artists. (key word: life)
+###Love is the main theme for most of the lyrics excerpt for the Metal (Love)
+###Not only Hip-Hop but also other lyrics like to use rhyme words such as "Yeah"
 Top Frequencies words based on the lyrics: 
 
 Category 1: Positive
