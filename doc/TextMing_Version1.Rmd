@@ -1,0 +1,431 @@
+---
+title: "Project 1 Lyrics - why metal last"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Which are the words you hear the most while listening to music? In different genres, which are the most used words? Which genres is the word "love" most used? In this project, I am interested in exploring these questions. I tried to answer them by using lyrics databases and analyzing them with Rstudio. 
+
+# Step 0 - Load all the required libraries
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+suppressMessages(library(ggplot2))
+suppressMessages(library(readr))
+suppressMessages(library(dplyr))
+suppressMessages(library(tidyr))
+suppressMessages(library(tidytext))
+suppressMessages(library(RColorBrewer))
+suppressMessages(library(reshape2))
+suppressMessages(library(wordcloud))
+suppressMessages(library(igraph))
+suppressMessages(library(widyr))
+suppressMessages(library(ggraph))
+suppressMessages(library(ngram))
+suppressMessages(library(wordcloud2))
+suppressMessages(library(tm))
+suppressMessages(library(data.table))
+suppressMessages(library(tidyverse))
+suppressMessages(library(DT))
+suppressMessages(library(textdata))
+
+```
+
+
+# Step 1 - Load the data to be cleaned and processed
+
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+load('../output/processed_lyrics.RData') 
+lyrics2 <- dt_lyrics
+lyrics2
+dt_artist <- fread('../data/artists.csv') 
+dt_artist
+```
+
+# Who are the artists? 
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+library(wordcloud)
+n_by_artist <- lyrics2 %>%
+  group_by(artist) %>%
+  count(artist, sort=TRUE)
+n_by_artist
+```
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+wordcloud2(n_by_artist[1:600,],  
+            size = .5)
+   
+```
+
+
+There are 10 types of genres: which are: country, eletronic, folk, hip-hop, indie, Jazz, Metal, Pop, R&B, and Rock. For the next analysis, removing the unknown genres will be helpful. 
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+levels(factor(tidy_lyrics$genre) )
+```
+
+
+### Lyrics Analysis
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+
+original_lyrics <- lyrics2 %>% 
+  group_by(artist) %>%
+  mutate(linenumber = row_number()) %>%
+  ungroup()
+
+tidy_lyrics <- original_lyrics %>% 
+  unnest_tokens(word, stemmedwords)
+
+```
+Count and find the most common words in all the lyrics as a whole. 
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+n_by_genre <- tidy_lyrics %>%
+  group_by(genre) %>%
+  count(word, sort = TRUE)
+n_by_genre
+```
+
+
+
+
+### WordCloud
+
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+library(reshape2)
+
+wordcloud_Rock <- tidy_lyrics %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = c("#F8766D", "#00BFC4"),
+                   max.words = 300)
+wordcloud_Rock
+
+```
+
+Rock wordcloud
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+library(wordcloud)
+# par(mfrow = c(1,2))
+tidy_lyrics %>%
+  filter(genre == "Rock") %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
+
+```
+
+Pop wordcloud
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+library(wordcloud)
+
+tidy_lyrics %>%
+  filter(genre == "Pop") %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
+```
+
+R&B wordcloud
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+library(wordcloud)
+
+tidy_lyrics %>%
+  filter(genre == "R&B") %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
+```
+
+
+Metal wordcloud
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+library(wordcloud)
+
+tidy_lyrics %>%
+  filter(genre == "Metal") %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
+```
+
+Hip_Hop wordcloud
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+library(wordcloud)
+
+tidy_lyrics %>%
+  filter(genre == "Hip-Hop") %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
+```
+
+Electronic wordcloud
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+library(wordcloud)
+
+tidy_lyrics %>%
+  filter(genre == "Electronic") %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
+```
+Metal wordcloud
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+library(wordcloud)
+
+tidy_lyrics %>%
+  filter(genre == "Metal") %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
+```
+
+### summary plot
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+lyric_sentiment<-tidy_lyrics %>% 
+  inner_join(get_sentiments("nrc"),by="word")
+lyric_sentiment %>%
+  filter(!sentiment %in% c("positive","negative")) %>%
+  count(word,sentiment,sort=TRUE)%>%
+  group_by(sentiment)%>%
+  top_n(n=10)%>%
+  ungroup() %>%
+  ggplot(aes(x=reorder(word,n),y=n,fill=sentiment))+
+  geom_col(show.legend = FALSE)+
+  facet_wrap(~sentiment,scales="free")+
+  coord_flip()
+```
+
+# total words in each genre
+```{r}
+total_word_in_genre <- tidy_lyrics %>%
+  select(genre, word) %>%
+  group_by(genre) %>%
+  count(genre)
+total_word_in_genre
+```
+
+
+# love theme
+Observations: 
+"Love" is the most used of the words in all of the generes, especially R&B, Jazz, and Pop.
+Hip-hop and Metal take the last place, which is predictable. 
+
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+n_by_genre %>%
+  group_by(genre) %>%
+  filter(genre != "Not Available" & genre != "Other") %>%
+  mutate(percentage = n/sum(n)) %>%
+  filter (word == "love") %>%
+  ggplot(aes(reorder(genre, percentage), percentage, fill = percentage)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(title = "Love", x = "", y = "percentage of word usage") +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+
+  
+```
+
+
+# Key word: Feel 
+Observation: 
+Interesting first place - Electronic music. Electronic is usually used for expression. This basically means that what we "feel" can be accompanied very well with electronic music (which is its essence is composed of artificially created sounds)
+Hip-hop and folk is least concerned with feelings 
+
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+
+n_by_genre %>%
+  group_by(genre) %>%
+  filter(genre != "Not Available" & genre != "Other") %>%
+  mutate(percentage = n/sum(n)) %>%
+  filter (word == "feel") %>%
+  ggplot(aes(reorder(genre, percentage), percentage, fill = percentage)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(title = "Feel", x = "", y = "percentage of word usage") +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+```
+
+# Want
+All the genres have its theme about love. 
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+n_by_genre %>%
+  group_by(genre) %>%
+  filter(genre != "Not Available" & genre != "Other") %>%
+  mutate(percentage = n/sum(n)) %>%
+  filter (word == "wanna") %>%
+  ggplot(aes(reorder(genre, percentage), percentage, fill = percentage)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(title = "Want", x = "", y = "percentage of word usage") +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+  
+```
+
+
+# Time
+All the genres have its theme about time. 
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+
+n_by_genre %>%
+  group_by(genre) %>%
+  filter(genre != "Not Available" & genre != "Other") %>%
+  mutate(percentage = n/sum(n)) %>%
+  filter (word == "time") %>%
+  ggplot(aes(reorder(genre, percentage), percentage, fill = percentage)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(title = "Time", x = "", y = "percentage of word usage") +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5)) 
+```
+
+
+# Death
+Observations: 
+Metal music is further highly related to the keyword "death" than other genres. 
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+n_by_genre %>%
+  group_by(genre) %>%
+  filter(genre != "Not Available" & genre != "Other") %>%
+  mutate(percentage = n/sum(n)) %>%
+  filter (word %in% c("death", "dies","die")) %>%
+  ggplot(aes(reorder(genre, percentage), percentage, fill = percentage)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(title = "Death", x = "", y = "percentage of word usage") +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5)) 
+```
+
+### -------------------------still editting ----------------
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+#method 1
+plot1 <- tidy_lyrics %>%
+  filter(genre != "Not Available" & genre != "Other") %>%
+  count(word,genre,sort=TRUE)%>%
+  group_by(genre) %>%
+  top_n(10) %>% 
+  arrange(desc(n)) %>%
+  ungroup() %>%  
+  ggplot(aes(reorder(word,n),n,fill = genre)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~genre, ncol = 3, scales = "free") +
+  coord_flip() +
+  labs(y = "n") +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+plot1
+
+
+ggsave("../figs/plot1.png")
+# method 2
+n_by_genre %>% 
+  group_by(genre) %>%
+  #top_n(10) %>%
+  ggplot (aes(reorder(word, n), n)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~genre, ncol = 3, scales = "free") +
+  coord_flip() +
+  labs(y = "n") +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+
+```
+
+
+
+### tf-idf 
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+# still need to learn how to use td idf 
+lyrics_by_genre <- tidy_lyrics %>%
+  group_by(genre) %>%
+  count(genre, word, sort = TRUE)
+
+tf_idf <- lyrics_by_genre %>%
+  bind_tf_idf(word, genre, n) %>%
+  arrange(desc(tf_idf)) 
+
+```
+
+# plot after tf-idf
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+
+plot2 <- tf_idf %>%
+  filter(genre != "Not Available" & genre != "Other") %>%
+  group_by(genre) %>%
+  top_n(10, tf_idf) %>% 
+  ungroup() %>%  
+  mutate(word = factor(word),
+    word = reorder(word, tf_idf)) %>%
+  ggplot(aes(word,tf_idf,fill = genre)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~genre, ncol = 3, scales = "free") +
+  coord_flip() +
+  labs(y = "tf-idf") +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+plot2
+ggsave("../figs/plot2.png")
+```
+
+```{r}
+save(n_by_genre, file="../output/n_by_genre.RData")
+save(tf_idf, file="../output/tf_idf.RData")
+
+
+```
+
+### Summary of 12 types of lyrics
+###Rock, Pop and Hip-Hop are the three largest lyrics. 
+###Feeling is for most artists who want to deliver from the songs. (key word: feel)
+###Inspiration is always from the lives of the artists. (key word: life)
+###Love is the main theme for most of the lyrics excerpt for the Metal (Love)
+###Not only Hip-Hop but also other lyrics like to use rhyme words such as "Yeah"
+Top Frequencies words based on the lyrics: 
+
+Category 1: Positive
+common words: love, time, yeah, life, world, wanna, gonna, day, night, feel 
+
+rock: love, time, yeah, baby, gonna, feel, life, day. night, world, heart
+pop: love, baby, time, yeah, heart, feel, gonna, life, wanna
+Country: love, time, heart, gonna, baby, night, day, home, yeah, life
+Electronic: love, feel, time, yeah, world, baby, night, life, gonna, wanna
+Jazz: love, baby, heart, time, day, night, gonna, life, feel
+Indie: love, time, home, heart, feel, gonna, life, eyes, day, mind
+Folk: love, time, day, yeah, gonna, home, night, world, hear, life, heart, baby, sea
+
+Category 2: Rhyme
+R&B: love, baby, yeah, time, girl, gonna, heart, feel, day, life, wanna
+Hip-Hop: nigga, love, yeah, shit, ya, yo, time, baby, fuck, em, niggas
+
+Category 3: Negative
+Metal: life, time, world, eyes, love, feel, blood, death, pain, dies
+
+Rock, pop, country, electronic, Jazz, Indie and Folk songs are about love and other positive feelings. Some artists talk about home, world and life (day and night) while others talk about the people they are in love with. 
+
+Hip-Hop are usually about love stories and include rhyme like ya, yo, em. 
+
+Metal is the only one which has many negative words (death, blood) as top frequencies words. 
+
+### References
+https://www.tidytextmining.com/tidytext.html
+
+
+
