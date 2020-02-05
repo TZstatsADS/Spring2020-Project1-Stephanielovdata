@@ -102,7 +102,7 @@ wordcloud_all_genre
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 lyric_sentiment<-tidy_lyrics %>% 
   inner_join(get_sentiments("nrc"),by="word")
-lyric_sentiment %>%
+sentiment_plot1 <- lyric_sentiment %>%
   filter(!sentiment %in% c("positive","negative")) %>%
   count(word,sentiment,sort=TRUE)%>%
   group_by(sentiment)%>%
@@ -114,6 +114,8 @@ lyric_sentiment %>%
   coord_flip() +
   theme_light() +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+sentiment_plot1
+ggsave("../figs/sentiment_plot1.png")
 
   
 ```
@@ -131,7 +133,7 @@ Observations:
 Hip-hop and Metal take the last place, which is predictable. 
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
-keyword_love_by_genre <- n_by_genre %>%
+keyword_love_by_genre_plot <- n_by_genre %>%
   group_by(genre) %>%
   filter(genre != "Not Available" & genre != "Other") %>%
   mutate(percentage = n/sum(n)) %>%
@@ -142,8 +144,9 @@ keyword_love_by_genre <- n_by_genre %>%
   labs(title = "Love", x = "", y = "percentage of word usage") +
   theme_light() +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
-keyword_love_by_genre
-  
+keyword_love_by_genre_plot
+ggsave("../figs/keyword_love_by_genre_plot.png")
+
 ```
 
 # Time
@@ -152,7 +155,7 @@ Observations:
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 
-n_by_genre %>%
+keyword_time_by_genre_plot <- n_by_genre %>%
   group_by(genre) %>%
   filter(genre != "Not Available" & genre != "Other") %>%
   mutate(percentage = n/sum(n)) %>%
@@ -163,6 +166,10 @@ n_by_genre %>%
   labs(title = "Time", x = "", y = "percentage of word usage") +
   theme_light() +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5)) 
+
+keyword_time_by_genre_plot
+ggsave("../figs/keyword_time_by_genre_plot.png")
+
 ```
 
 # Want
@@ -173,7 +180,7 @@ Observations:
 Metal and Jazz take the last place, which is predictable.
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
-n_by_genre %>%
+keyword_want_by_genre_plot <- n_by_genre %>%
   group_by(genre) %>%
   filter(genre != "Not Available" & genre != "Other") %>%
   mutate(percentage = n/sum(n)) %>%
@@ -184,7 +191,9 @@ n_by_genre %>%
   labs(title = "Want", x = "", y = "percentage of word usage") +
   theme_light() +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
-  
+
+keyword_want_by_genre_plot
+ggsave("../figs/keyword_want_by_genre_plot.png")
 ```
 
 # Life 
@@ -193,7 +202,7 @@ Observations:
 
 "Life" is highly used of the words in all of the generes, especially Metal, Pop, and Electronic.
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
-n_by_genre %>%
+keyword_life_by_genre_plot <- n_by_genre %>%
   group_by(genre) %>%
   filter(genre != "Not Available" & genre != "Other") %>%
   mutate(percentage = n/sum(n)) %>%
@@ -204,6 +213,9 @@ n_by_genre %>%
   labs(title = "Life", x = "", y = "percentage of word usage") +
   theme_light() +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5)) 
+
+keyword_life_by_genre_plot
+ggsave("../figs/keyword_life_by_genre_plot.png")
 ```
 
 ### Further analysis on Electronic, Hip-pop, and Metal
@@ -228,7 +240,7 @@ Hip-hop and folk is least concerned with feelings
 
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
-n_by_genre %>%
+keyword_feel_by_genre_plot <- n_by_genre %>%
   group_by(genre) %>%
   filter(genre != "Not Available" & genre != "Other") %>%
   mutate(percentage = n/sum(n)) %>%
@@ -240,13 +252,14 @@ n_by_genre %>%
   theme_light() +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
 
-
+keyword_feel_by_genre_plot
+ggsave("../figs/keyword_feel_by_genre_plot.png")
 ```
 
 # Where do other words, such as death, ill, and money, come from? 
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
-n_by_genre %>%
+keyword_ill_by_genre_plot <- n_by_genre %>%
   group_by(genre) %>%
   filter(genre != "Not Available" & genre != "Other") %>%
   mutate(percentage = n/sum(n)) %>%
@@ -257,10 +270,13 @@ n_by_genre %>%
   labs(title = "ill", x = "", y = "percentage of word usage") +
   theme_light() +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5)) 
+
+keyword_ill_by_genre_plot
+ggsave("../figs/keyword_ill_by_genre_plot.png")
 ```
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
-n_by_genre %>%
+keyword_money_by_genre_plot <- n_by_genre %>%
   group_by(genre) %>%
   filter(genre != "Not Available" & genre != "Other") %>%
   mutate(percentage = n/sum(n)) %>%
@@ -271,6 +287,9 @@ n_by_genre %>%
   labs(title = "Money", x = "", y = "percentage of word usage") +
   theme_light() +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5)) 
+
+keyword_money_by_genre_plot
+ggsave("../figs/keyword_money_by_genre_plot.png")
 ```
 
 
@@ -293,7 +312,7 @@ Observations:
 Metal music is further highly related to the keyword "death" than other genres. 
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
-n_by_genre %>%
+keyword_death_by_genre_plot <- n_by_genre %>%
   group_by(genre) %>%
   filter(genre != "Not Available" & genre != "Other") %>%
   mutate(percentage = n/sum(n)) %>%
@@ -304,6 +323,9 @@ n_by_genre %>%
   labs(title = "Death", x = "", y = "percentage of word usage") +
   theme_light() +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5)) 
+
+keyword_death_by_genre_plot
+ggsave("../figs/keyword_death_by_genre_plot.png")
 ```
 
 ### What are the most frequently used words in Metal music?
@@ -333,7 +355,7 @@ tf_idf
 # Plot after tf-idf
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 
-plot2 <- tf_idf %>%
+tf_idf_plot <- tf_idf %>%
   filter(genre != "Not Available" & genre != "Other") %>%
   group_by(genre) %>%
   top_n(10, tf_idf) %>% 
@@ -347,8 +369,8 @@ plot2 <- tf_idf %>%
   labs(y = "tf-idf") +
   theme_light() +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
-plot2
-ggsave("../figs/plot2.png")
+tf_idf_plot
+ggsave("../figs/tf_idf_plot.png")
 ```
 
 
