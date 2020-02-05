@@ -198,6 +198,23 @@ keyword_life_by_genre_plot
 ggsave("../figs/keyword_life_by_genre_plot.png")
 ```
 
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+keyword_feel_by_genre_plot <- n_by_genre %>%
+  group_by(genre) %>%
+  filter(genre != "Not Available" & genre != "Other") %>%
+  mutate(percentage = n/sum(n)) %>%
+  filter (word == "feel") %>%
+  ggplot(aes(reorder(genre, percentage), percentage, fill = percentage)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(title = "Feel", x = "", y = "percentage of word usage") +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5)) 
+
+keyword_feel_by_genre_plot
+ggsave("../figs/keyword_feel_by_genre_plot.png")
+```
 ### Genre: Electronic 
 
 ### Keyword: Feel 
@@ -263,7 +280,7 @@ ggsave("../figs/keyword_money_by_genre_plot.png")
 ```
 
 
-### Hip-Hop
+### Genre: Hip-Hop
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 library(wordcloud)
