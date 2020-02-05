@@ -1,6 +1,8 @@
 ---
 title: "Project 1 - What Lyrics Say"
-output: html_document
+output:   
+  html_document: default
+  html_notebook: default
 ---
 
 ```{r setup, include=FALSE}
@@ -197,6 +199,7 @@ keyword_life_by_genre_plot <- n_by_genre %>%
 keyword_life_by_genre_plot
 ggsave("../figs/keyword_life_by_genre_plot.png")
 ```
+
 
 ### Genre: Electronic 
 
