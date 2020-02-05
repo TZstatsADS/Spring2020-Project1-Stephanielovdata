@@ -64,11 +64,6 @@ wordcloud2(n_by_artist[1:600,],
 
 There are 10 types of genres: which are: country, eletronic, folk, hip-hop, indie, Jazz, Metal, Pop, R&B, and Rock. For the next analysis, removing the unknown genres will be helpful. 
 
-```{r echo=FALSE,message=FALSE,warning=FALSE}
-levels(factor(tidy_lyrics$genre) )
-```
-
-
 ### Lyrics Analysis
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
