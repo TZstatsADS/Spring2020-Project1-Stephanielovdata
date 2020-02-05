@@ -7,6 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
 Which are the words you hear the most while listening to music? In different genres, which are the most used words? Which genres is the word "love" most used? In this project, I am interested in exploring these questions. I tried to answer them by using lyrics databases and analyzing them with Rstudio. 
 
 # Step 0 - Load all the required libraries
@@ -90,104 +91,23 @@ n_by_genre <- tidy_lyrics %>%
 n_by_genre
 ```
 
-
-
-
 ### WordCloud
-
+We used the lexicon from Bing. 
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 library(reshape2)
 
-wordcloud_Rock <- tidy_lyrics %>%
+wordcloud_all_genre <- tidy_lyrics %>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment, sort = TRUE) %>%
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%
   comparison.cloud(colors = c("#F8766D", "#00BFC4"),
                    max.words = 300)
-wordcloud_Rock
+wordcloud_all_genre
 
 ```
+Sentiment analysis
 
-Rock wordcloud
-
-```{r echo=FALSE,message=FALSE,warning=FALSE}
-library(wordcloud)
-# par(mfrow = c(1,2))
-tidy_lyrics %>%
-  filter(genre == "Rock") %>%
-  count(word) %>%
-  with(wordcloud(word, n, max.words = 100))
-
-```
-
-Pop wordcloud
-
-```{r echo=FALSE,message=FALSE,warning=FALSE}
-library(wordcloud)
-
-tidy_lyrics %>%
-  filter(genre == "Pop") %>%
-  count(word) %>%
-  with(wordcloud(word, n, max.words = 100))
-```
-
-R&B wordcloud
-
-```{r echo=FALSE,message=FALSE,warning=FALSE}
-library(wordcloud)
-
-tidy_lyrics %>%
-  filter(genre == "R&B") %>%
-  count(word) %>%
-  with(wordcloud(word, n, max.words = 100))
-```
-
-
-Metal wordcloud
-
-```{r echo=FALSE,message=FALSE,warning=FALSE}
-library(wordcloud)
-
-tidy_lyrics %>%
-  filter(genre == "Metal") %>%
-  count(word) %>%
-  with(wordcloud(word, n, max.words = 100))
-```
-
-Hip_Hop wordcloud
-
-```{r echo=FALSE,message=FALSE,warning=FALSE}
-library(wordcloud)
-
-tidy_lyrics %>%
-  filter(genre == "Hip-Hop") %>%
-  count(word) %>%
-  with(wordcloud(word, n, max.words = 100))
-```
-
-Electronic wordcloud
-
-```{r echo=FALSE,message=FALSE,warning=FALSE}
-library(wordcloud)
-
-tidy_lyrics %>%
-  filter(genre == "Electronic") %>%
-  count(word) %>%
-  with(wordcloud(word, n, max.words = 100))
-```
-Metal wordcloud
-
-```{r echo=FALSE,message=FALSE,warning=FALSE}
-library(wordcloud)
-
-tidy_lyrics %>%
-  filter(genre == "Metal") %>%
-  count(word) %>%
-  with(wordcloud(word, n, max.words = 100))
-```
-
-### summary plot
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 lyric_sentiment<-tidy_lyrics %>% 
   inner_join(get_sentiments("nrc"),by="word")
@@ -200,27 +120,26 @@ lyric_sentiment %>%
   ggplot(aes(x=reorder(word,n),y=n,fill=sentiment))+
   geom_col(show.legend = FALSE)+
   facet_wrap(~sentiment,scales="free")+
-  coord_flip()
+  coord_flip() +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+
+  
 ```
 
-# total words in each genre
-```{r}
-total_word_in_genre <- tidy_lyrics %>%
-  select(genre, word) %>%
-  group_by(genre) %>%
-  count(genre)
-total_word_in_genre
-```
+From the following graph, we are interested in exploring more: 
+which genres does have the love theme? 
+what electronic music try to convey?
+While most genres have its main theme about love, what is the theme for Metal music? 
 
-
-# love theme
+# All the genres have the theme about love, time, life and want. 
+# Key word: love
 Observations: 
 "Love" is the most used of the words in all of the generes, especially R&B, Jazz, and Pop.
 Hip-hop and Metal take the last place, which is predictable. 
 
-
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
-n_by_genre %>%
+keyword_love_by_genre <- n_by_genre %>%
   group_by(genre) %>%
   filter(genre != "Not Available" & genre != "Other") %>%
   mutate(percentage = n/sum(n)) %>%
@@ -231,53 +150,15 @@ n_by_genre %>%
   labs(title = "Love", x = "", y = "percentage of word usage") +
   theme_light() +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
-
+keyword_love_by_genre
   
 ```
 
-
-# Key word: Feel 
-Observation: 
-Interesting first place - Electronic music. Electronic is usually used for expression. This basically means that what we "feel" can be accompanied very well with electronic music (which is its essence is composed of artificially created sounds)
-Hip-hop and folk is least concerned with feelings 
-
-
-```{r echo=FALSE,message=FALSE,warning=FALSE}
-
-n_by_genre %>%
-  group_by(genre) %>%
-  filter(genre != "Not Available" & genre != "Other") %>%
-  mutate(percentage = n/sum(n)) %>%
-  filter (word == "feel") %>%
-  ggplot(aes(reorder(genre, percentage), percentage, fill = percentage)) +
-  geom_col(show.legend = FALSE) +
-  coord_flip() +
-  labs(title = "Feel", x = "", y = "percentage of word usage") +
-  theme_light() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
-```
-
-# Want
-All the genres have its theme about love. 
-
-```{r echo=FALSE,message=FALSE,warning=FALSE}
-n_by_genre %>%
-  group_by(genre) %>%
-  filter(genre != "Not Available" & genre != "Other") %>%
-  mutate(percentage = n/sum(n)) %>%
-  filter (word == "wanna") %>%
-  ggplot(aes(reorder(genre, percentage), percentage, fill = percentage)) +
-  geom_col(show.legend = FALSE) +
-  coord_flip() +
-  labs(title = "Want", x = "", y = "percentage of word usage") +
-  theme_light() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
-  
-```
-
-
-# Time
+# Key word: Time
 All the genres have its theme about time. 
+
+Observations: 
+"Time" is highly used of the words in all of the generes, especially R&B, Rock, and Pop.
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 
@@ -294,8 +175,119 @@ n_by_genre %>%
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5)) 
 ```
 
+# Want
+Observations: 
+"Want" is highly hused of the words in all of the generes, especially R&B, Electronic, and Pop.
+Metal and Jazz take the last place, which is predictable.
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+n_by_genre %>%
+  group_by(genre) %>%
+  filter(genre != "Not Available" & genre != "Other") %>%
+  mutate(percentage = n/sum(n)) %>%
+  filter (word == "wanna") %>%
+  ggplot(aes(reorder(genre, percentage), percentage, fill = percentage)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(title = "Want", x = "", y = "percentage of word usage") +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+  
+```
+# Life 
+Observations: 
+"Life" is highly used of the words in all of the generes, especially Metal, Pop, and Electronic.
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+n_by_genre %>%
+  group_by(genre) %>%
+  filter(genre != "Not Available" & genre != "Other") %>%
+  mutate(percentage = n/sum(n)) %>%
+  filter (word == "life") %>%
+  ggplot(aes(reorder(genre, percentage), percentage, fill = percentage)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(title = "Life", x = "", y = "percentage of word usage") +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5)) 
+```
 
-# Death
+Further analysis on Electronic, Hip-pop, and Metal
+
+What electronic music try to convey? 
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+library(wordcloud)
+
+tidy_lyrics %>%
+  filter(genre == "Electronic") %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
+```
+
+# Key word: Feel 
+Observation: 
+Interesting first place - Electronic music. Electronic is usually used for expression. This basically means that what we "feel" can be accompanied very well with electronic music (which is its essence is composed of artificially created sounds)
+Hip-hop and folk is least concerned with feelings 
+
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+keyword_feel_by_genre <- n_by_genre %>%
+  group_by(genre) %>%
+  filter(genre != "Not Available" & genre != "Other") %>%
+  mutate(percentage = n/sum(n)) %>%
+  filter (word == "feel") %>%
+  ggplot(aes(reorder(genre, percentage), percentage, fill = percentage)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(title = "Feel", x = "", y = "percentage of word usage") +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
+keyword_feel_by_genre
+```
+
+Where do other words, such as death, ill, and money, come from? 
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+n_by_genre %>%
+  group_by(genre) %>%
+  filter(genre != "Not Available" & genre != "Other") %>%
+  mutate(percentage = n/sum(n)) %>%
+  filter (word == "ill") %>%
+  ggplot(aes(reorder(genre, percentage), percentage, fill = percentage)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(title = "ill", x = "", y = "percentage of word usage") +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5)) 
+```
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+n_by_genre %>%
+  group_by(genre) %>%
+  filter(genre != "Not Available" & genre != "Other") %>%
+  mutate(percentage = n/sum(n)) %>%
+  filter (word == "money") %>%
+  ggplot(aes(reorder(genre, percentage), percentage, fill = percentage)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(title = "Money", x = "", y = "percentage of word usage") +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5)) 
+```
+
+
+What Hip_Hop say? 
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+library(wordcloud)
+
+tidy_lyrics %>%
+  filter(genre == "Hip-Hop") %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
+```
+
+
+# Key word: Death
 Observations: 
 Metal music is further highly related to the keyword "death" than other genres. 
 
@@ -313,42 +305,16 @@ n_by_genre %>%
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5)) 
 ```
 
-### -------------------------still editting ----------------
+Metal wordcloud
+
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
-#method 1
-plot1 <- tidy_lyrics %>%
-  filter(genre != "Not Available" & genre != "Other") %>%
-  count(word,genre,sort=TRUE)%>%
-  group_by(genre) %>%
-  top_n(10) %>% 
-  arrange(desc(n)) %>%
-  ungroup() %>%  
-  ggplot(aes(reorder(word,n),n,fill = genre)) +
-  geom_col(show.legend = FALSE) +
-  facet_wrap(~genre, ncol = 3, scales = "free") +
-  coord_flip() +
-  labs(y = "n") +
-  theme_light() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
-plot1
+library(wordcloud)
 
-
-ggsave("../figs/plot1.png")
-# method 2
-n_by_genre %>% 
-  group_by(genre) %>%
-  #top_n(10) %>%
-  ggplot (aes(reorder(word, n), n)) +
-  geom_col(show.legend = FALSE) +
-  facet_wrap(~genre, ncol = 3, scales = "free") +
-  coord_flip() +
-  labs(y = "n") +
-  theme_light() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
-
+tidy_lyrics %>%
+  filter(genre == "Metal") %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
 ```
-
-
 
 ### tf-idf 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
@@ -362,6 +328,7 @@ tf_idf <- lyrics_by_genre %>%
   arrange(desc(tf_idf)) 
 
 ```
+
 
 # plot after tf-idf
 
@@ -385,6 +352,7 @@ plot2
 ggsave("../figs/plot2.png")
 ```
 
+
 ```{r}
 save(n_by_genre, file="../output/n_by_genre.RData")
 save(tf_idf, file="../output/tf_idf.RData")
@@ -392,12 +360,13 @@ save(tf_idf, file="../output/tf_idf.RData")
 
 ```
 
-### Summary of 12 types of lyrics
-###Rock, Pop and Hip-Hop are the three largest lyrics. 
-###Feeling is for most artists who want to deliver from the songs. (key word: feel)
-###Inspiration is always from the lives of the artists. (key word: life)
-###Love is the main theme for most of the lyrics excerpt for the Metal (Love)
-###Not only Hip-Hop but also other lyrics like to use rhyme words such as "Yeah"
+### Summary of 10 types of lyrics
+Rock, Pop and Hip-Hop are the three largest datasets. 
+Feeling is for most artists, especially elecronic musicians, who want to convey from the songs. (key word: feel)
+The inspiration of the lyrics may always from the lives of the artists. (key word: life)
+Love is the main theme for most of the lyrics especially for Jazz (Love)
+Not only Hip-Hop but also other lyrics like to use rhyme words such as "Yeah."
+
 Top Frequencies words based on the lyrics: 
 
 Category 1: Positive
@@ -426,6 +395,7 @@ Metal is the only one which has many negative words (death, blood) as top freque
 
 ### References
 https://www.tidytextmining.com/tidytext.html
+https://www.thetoptens.com/false-stereotypes-about-music-genres/
 
 
 
