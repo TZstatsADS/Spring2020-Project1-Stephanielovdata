@@ -6,13 +6,16 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+"Every musical genre has its own set of conventions beyond the music. Take country, rap or any other label and you automatically connote a certain set of principles, a way of life. Music, perhaps more than any other art form today, is one understood through a system of categorization" (Chan, 2007). Different types of music influence each individual differently.  It even goes to the extent of the type of song a person is listening to, such as an up beat song or a sad and slow song. 
+
+How does music affect people perspectives? Music and perspectives go together because most of the songs we listen to has lyrics written by someone usually based on physical or emotional struggles. And sometimes the lyrics of a song relates to similar issues we may be dealing with in our lives so this creates some kind of connection between the music and our lives in general.
+
+In this project, I am interested in exploring the connection between the music and our lives by answering these questions: which are the words you hear the most while listening to music? In different genres, which are the most used words? Which genres is the word "love" most used?  I tried to answer them by using lyrics databases and analyzing them with Rstudio. In lyrics datasets, there are 10 types of genres of music: which are: country, eletronic, folk, hip-hop, indie, Jazz, Metal, Pop, R&B, and Rock. I focus on the genres including: Electronic, Hip-Hop, Rock, Metal, and Country. 
 
 
-Which are the words you hear the most while listening to music? In different genres, which are the most used words? Which genres is the word "love" most used? In this project, I am interested in exploring these questions. I tried to answer them by using lyrics databases and analyzing them with Rstudio. 
-
-Step 0 - Load all the required libraries
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
+# Step 0 - Load all the required libraries
 suppressMessages(library(ggplot2))
 suppressMessages(library(readr))
 suppressMessages(library(dplyr))
@@ -34,15 +37,16 @@ suppressMessages(library(textdata))
 
 ```
 
-Step 1 - Load the data to be cleaned and processed
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
+# Step 1 - Load the data to be cleaned and processed
 load('../output/processed_lyrics.RData') 
 lyrics2 <- dt_lyrics
 dt_artist <- fread('../data/artists.csv') 
 ```
 
-# Who are the artists? 
+# Section 1: Grance the database 
+### Who are the artists? 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 library(wordcloud)
 n_by_artist <- lyrics2 %>%
@@ -58,9 +62,7 @@ wordcloud2(n_by_artist[1:600,],
 ```
 
 
-There are 10 types of genres: which are: country, eletronic, folk, hip-hop, indie, Jazz, Metal, Pop, R&B, and Rock. For the next analysis, removing the unknown genres will be helpful. 
-
-### Lyrics Analysis
+# Section 2: Lyrics Analysis
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 
@@ -73,7 +75,7 @@ tidy_lyrics <- original_lyrics %>%
   unnest_tokens(word, stemmedwords)
 
 ```
-Count and find the most common words in all the lyrics as a whole. 
+First, count and find the most common words in all the lyrics as a whole. 
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 n_by_genre <- tidy_lyrics %>%
@@ -82,8 +84,7 @@ n_by_genre <- tidy_lyrics %>%
 n_by_genre
 ```
 
-### WordCloud
-We used the lexicon from Bing. 
+Second, I used the lexicon from Bing. 
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 library(reshape2)
@@ -125,7 +126,7 @@ which genres does have the love theme?
 what electronic music try to convey?
 While most genres have its main theme about love, what is the theme for Metal music? 
 
-# Love
+### Keyword: Love
 Observations: 
 
 "Love" is the most used of the words in all of the generes, especially R&B, Jazz, and Pop.
@@ -149,8 +150,10 @@ ggsave("../figs/keyword_love_by_genre_plot.png")
 
 ```
 
-# Time
+### Keyword: Time
+
 Observations: 
+
 "Time" is highly used of the words in all of the generes, especially R&B, Rock, and Pop.
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
@@ -172,35 +175,12 @@ ggsave("../figs/keyword_time_by_genre_plot.png")
 
 ```
 
-# Want
-Observations: 
-
-"Want" is highly hused of the words in all of the generes, especially R&B, Electronic, and Pop.
-
-Metal and Jazz take the last place, which is predictable.
-
-```{r echo=FALSE,message=FALSE,warning=FALSE}
-keyword_want_by_genre_plot <- n_by_genre %>%
-  group_by(genre) %>%
-  filter(genre != "Not Available" & genre != "Other") %>%
-  mutate(percentage = n/sum(n)) %>%
-  filter (word == "wanna") %>%
-  ggplot(aes(reorder(genre, percentage), percentage, fill = percentage)) +
-  geom_col(show.legend = FALSE) +
-  coord_flip() +
-  labs(title = "Want", x = "", y = "percentage of word usage") +
-  theme_light() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust= 0.5))
-
-keyword_want_by_genre_plot
-ggsave("../figs/keyword_want_by_genre_plot.png")
-```
-
-# Life 
+### Keyword: Life 
 
 Observations: 
 
 "Life" is highly used of the words in all of the generes, especially Metal, Pop, and Electronic.
+
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 keyword_life_by_genre_plot <- n_by_genre %>%
   group_by(genre) %>%
@@ -218,25 +198,15 @@ keyword_life_by_genre_plot
 ggsave("../figs/keyword_life_by_genre_plot.png")
 ```
 
-### Further analysis on Electronic, Hip-pop, and Metal
+### Genre: Electronic 
 
-# What electronic music try to convey? 
+### Keyword: Feel 
 
-```{r echo=FALSE,message=FALSE,warning=FALSE}
-library(wordcloud)
-
-tidy_lyrics %>%
-  filter(genre == "Electronic") %>%
-  count(word) %>%
-  with(wordcloud(word, n, max.words = 100))
-```
-
-# Feel 
 Observation: 
 
 Interesting first place - Electronic music. Electronic is usually used for expression. This basically means that what we "feel" can be accompanied very well with electronic music (which is its essence is composed of artificially created sounds)
 
-Hip-hop and folk is least concerned with feelings 
+Hip-hop and folk is least concerned with feelings.  
 
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
@@ -256,7 +226,7 @@ keyword_feel_by_genre_plot
 ggsave("../figs/keyword_feel_by_genre_plot.png")
 ```
 
-# Where do other words, such as death, ill, and money, come from? 
+### Where do other words, such as death, ill, and money, come from? 
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 keyword_ill_by_genre_plot <- n_by_genre %>%
@@ -293,7 +263,7 @@ ggsave("../figs/keyword_money_by_genre_plot.png")
 ```
 
 
-### What Hip_Hop say? 
+### Hip-Hop
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 library(wordcloud)
@@ -304,8 +274,9 @@ tidy_lyrics %>%
   with(wordcloud(word, n, max.words = 100))
 ```
 
+### Genre: Metal
 
-# Death
+### Keyword: Death
 
 Observations:
 
@@ -340,8 +311,9 @@ tidy_lyrics %>%
 ```
 
 # tf-idf 
+
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
-# still need to learn how to use td idf 
+# These are all words that appear in all ten of the genres, so the idf term (which will then be the natural log of 1) is zero. I removed the most common words. 
 lyrics_by_genre <- tidy_lyrics %>%
   group_by(genre) %>%
   count(genre, word, sort = TRUE)
@@ -352,11 +324,11 @@ tf_idf <- lyrics_by_genre %>%
 tf_idf
 ```
 
-# Plot after tf-idf
+### Plot after tf-idf
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 
 tf_idf_plot <- tf_idf %>%
-  filter(genre != "Not Available" & genre != "Other") %>%
+  filter(genre %in% c("Rock", "Metal", "Country")) %>%
   group_by(genre) %>%
   top_n(10, tf_idf) %>% 
   ungroup() %>%  
@@ -373,31 +345,45 @@ tf_idf_plot
 ggsave("../figs/tf_idf_plot.png")
 ```
 
+### Genre: Country
+
+"There is a common misconception about country music that gives it such a bad reputation: every country song is a sob story about a hillbilly whose girl left him, pickup broke down, dog died, or so the story goes. Another misconception is that if you listen to country music you automatically become a hick" (Lockhart, 2008).  
+
+Country music can be heard at a county fair. It's usually upbeat and laid back. Music videos are shot in natural settings: old houses, country fields or various scenes of a hometown. The artists wear blue jeans, flannel shirts, cowboy hats and boots. They're normally unshaven, tan and look dirty. I believe people from the south and rural areas are the most loyal country fans. The majority of the south listens to only country music. Courtesy is key down south; traditional values and morals are present in their music. High school sweethearts, football games, love and work are common subject matter. 
+
+### Genre: Rock/Metal 
+
+I associate these two types of music with people who want to rebel against society. Rock music has stereotypes that fans of heavy metal focus on traits and behaviors that are self-destructive (Fried, 2003, p. 2).  I can see the fans of this genre being born into it or developing the liking later in life as a result of some need to rebel.  It always seems to be angry music for angry people. This begins to address some of the psychological effects music can have on a person. Metal is the one which has many negative words (death, blood) as top frequencies words. 
+
+
 
 ```{r echo=FALSE,message=FALSE,warning=FALSE}
 save(n_by_genre, file="../output/n_by_genre.RData")
 save(tf_idf, file="../output/tf_idf.RData")
-
-
 ```
 
-### Summary of 10 types of lyrics
-Rock, Pop and Hip-Hop are the three largest datasets. 
-Feeling is for most artists, especially elecronic musicians, who want to convey from the songs. (key word: feel)
+# Section 3: Summary
+Feeling is for most artists, especially elecronic musicians, who want to convey from the songs. (key word: feel) 
 The inspiration of the lyrics may always from the lives of the artists. (key word: life)
-Love is the main theme for most of the lyrics especially for Jazz (key word: Love)
+Love is the main theme for most of the lyrics. (key word: Love)
 Not only Hip-Hop but also other lyrics like to use rhyme words such as "Yeah."
+Especially Hip-Hop include rhyme like ya, yo, em. 
 
-Rock, pop, country, electronic, Jazz, Indie and Folk songs are about love and other positive feelings. Some artists talk about home, world and life (day and night) while others talk about the people they are in love with. 
 
-Hip-Hop are also about money and include rhyme like ya, yo, em. 
+All in all, most artists are aware of their fan base and use their music to send messages. Most genres are about love and other positive feelings. Some artists talk about home, world and life (day and night) while others talk about the people they are in love with. I think music has a major influence on a person's life.  It often influences a person's mood and behavior.  Whether the music be rap or classical, upbeat or slow, happy or sad; it all has a meaning. Country music and hard rock may differ from each other; however, this does not make country more pleasing than rock. 
 
-Metal is the only one which has many negative words (death, blood) as top frequencies words. 
-
-### References
+# Section 4: References
 https://www.tidytextmining.com/tidytext.html
 
 https://www.thetoptens.com/false-stereotypes-about-music-genres/
 
+Chan, Crystal.  (2007). Pop Rhetoric: Springtime for musical stereotypes.  The McGill 
+Tribune Online.  Retrieved April 23, 2008, from http://media.www.mcgilltribune.com/media/storage/paper234/news/2007/03/12/AE/Pop-Rhetoric.Springtime.For.Musical.Stereotypes-2772639.shtml
 
+Lockhart, Amelia (2008).  Yea, I Like Country.  The Cord Weekly.  
+
+Fried, Carrie D, Ph.D. (2003).  Stereotypes of Music Fans: Are Rap and Heavy Metal 
+Fans a Danger to Themselves or Others?  Journal of Media Psychology, Volume 8, Number 3.  Retrieved from http://www.calstatela.edu/faculty/sfischo/Fried%20rev.pdf
+
+Musical Stereotype
 
